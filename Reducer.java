@@ -71,5 +71,37 @@ public class Reducer {
 		}
 
 		// TODO
+		FileLinePriorityQueue queue= new FileLinePriorityQueue(4, r.getComparator());
+		Comparator<FileLine> cmp = r.getComparator();
+		try{
+		    for(int i =0; i<fileList.size();i++){
+		     	if(fileList.get(i).hasNext()){
+				queue.insert(fileList.get(i).next());
+			    }
+		    }
+		    while(!queue.isEmpty()){
+			    FileLine fileLine = queue.removeMin();
+		    if(cmp.compare(new FileLine(r.toString(),null), fileLine) == 0){
+		    	r.join(fileLine);
+		    }else{
+		    	System.out.println(r.toString());
+		    	r.clear();
+     	    	r.join(fileLine);
+		    }
+		    
+		    if (fileList.get(fileLine.getFileIterator().getIndex()).hasNext()){
+		    	queue.insert(fileList.get(fileLine.getFileIterator().getIndex()).next());	
+		    }else {
+		    	//if this file has been exhausted, do nothing
+		    }
+		    }
+		    System.out.println(r.toString());
+		}
+		catch(PriorityQueueFullException ex){
+			System.out.println(ex);
+		}
+		catch(PriorityQueueEmptyException e){
+			System.out.println(e);
+		}
     }
 }
